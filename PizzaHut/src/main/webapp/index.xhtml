@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <title>Mestro Cliente</title>
+        <f:event listener="#{ClienteC.listar()}" type="preRenderView" />
+    </h:head>
+    <h:body >
+        <p:menubar>
+            <p:submenu label="Productos">
+                <p:menuitem value="registrar" outcome="producto"/>
+            </p:submenu>
+            <p:submenu label="Ventas">
+                <p:menuitem value="Realizar Venta" outcome="venta"/>
+            </p:submenu>
+        </p:menubar>
+
+        <p:growl id="mensaje" severity="info, fatal , error" showDetail="true" showSummary="true" />
+        <p:growl id="growl-sticky" for="sticky-key" showDetail="true" showSummary="true" />
+
+        <center>
+            Registro de Clientes
+            <p:spacer height="3"/>   
+            <h:form id="Regis">
+
+                <p:panelGrid columns="3" >
+
+
+                    <p:outputLabel value="Nombre" />
+                    <p:inputText value="#{ClienteC.cli.nombre}" required="true" maxlength="20" id="nombre" style="width: 315px">
+                        <p:keyFilter regEx="/[A-Za-z ]/"/>
+                    </p:inputText>
+
+                    <!--                    FIN EMAIL-->
+                    <p:outputLabel value="Apellido" />
+                    <p:inputText value="#{ClienteC.cli.apellido}" required="true" maxlength="20" id="apellido" style="width: 315px">
+                        <p:keyFilter regEx="/[A-Za-z ]/"/>
+                    </p:inputText>  
+                    <!--                    FIN EMAIL-->
+
+                    <p:outputLabel for="DNI" value="DNI" />
+                    <p:inputText value="#{ClienteC.cli.dni}" required="true" maxlength="8" id="DNI" style="width: 315px" >
+                        <f:validator validatorId="validarDni" />
+                        <p:ajax update="msgDni" event="keyup"/>
+                        <p:tooltip for="DNI" value="Ingrese el DNI" trackMouse="focus" />
+                        <p:keyFilter regEx="/[0-9]/" />
+                    </p:inputText>
+                    <p:message for="DNI" id="msgDni" display="text"/>
+
+
+
+
+                    <p:outputLabel for="email" value="Email:" />
+                    <p:inputText value="#{ClienteC.cli.email}"  required="true" id="email" style="width: 315px">
+                        <f:validator validatorId="validarEmail"/>
+                        <p:ajax update="msgEmail" event="keyup"/>
+                        <p:tooltip for="email" value="Ingrese el correo" trackMouse="focus"/>
+                    </p:inputText>
+                    <p:message for="email" id="msgEmail" display="text"/>
+
+
+
+                    <p:outputLabel value="Fecha de nacimiento"  />
+                    <p:inputText value="#{ClienteC.cli.fechaNacimiento}"   type="date" style="width: 315px ; text-align: center"  id="nacimiento"/>
+
+
+                    <!--                    FIN EMAIL-->
+
+                    <p:outputLabel for="celular" value="Celular" />
+                    <p:inputText value="#{ClienteC.cli.celular}" required="true" maxlength="9" id="celular" style="width: 315px">
+                        <f:validator validatorId="validarCelular"/>
+                        <p:ajax update="msgCelular" event="keyup"/>
+                        <p:tooltip for="celular" value="Digíte el numero de celular" trackMouse="focus"/>
+                        <p:keyFilter regEx="/[0-9]/" />
+                    </p:inputText>
+                    <p:message for="celular" id="msgCelular" display="text"/>
+
+
+                    <p:outputLabel value="Direccion" />
+                    <p:inputText value="#{ClienteC.cli.direccion}" required="true" maxlength="20" id="direccion" style="width: 315px">
+                        <p:keyFilter regEx="/[A-Za-z0-9 -_°]/" />
+                    </p:inputText>
+
+                    <!--                    FIN EMAIL-->
+                    <p:outputLabel value="Ubigeo"  />
+
+                    <p:selectOneMenu id="txtUBICLI"
+                                     value="#{ClienteC.cli.ubigeo}" styleClass="ticket"
+                                     autoWidth="true" required="true" >
+
+                        <f:selectItem noSelectionOption="true"
+                                      itemLabel="Seleccionar"  />
+                        <f:selectItems value="#{ClienteC.listarUbigeo()}" var="ubi"
+                                       itemValue="#{ubi.codigo}"
+                                       itemLabel="#{ubi.departamento},#{ubi.provincia}, #{ubi.distrito}" />
+                    </p:selectOneMenu>
+
+                </p:panelGrid>
+
+            </h:form>
+
+            <!-- Creando botones de Registrar y limpiar-->
+            <p:spacer height="30"/>   
+            <p:commandButton id="Registrar"  value="Registrar" actionListener="#{ClienteC.registrar()}" update=":MostrarCliente:tablacli mensaje Regis"/>
+            <p:commandButton value="Limpiar" actionListener="#{ClienteC.limpiar()}" update=":Regis"/>  
+
+            <h:form >
+                <center>
+                    <h:commandLink>
+                        <h:graphicImage url="/Image/excel.png" width="50px"/>
+                        <p:dataExporter type="xls" target=":MostrarCliente:tablacli" fileName="Listado de cliente" />
+                    </h:commandLink>
+                </center>
+                <p:commandButton value="Cliente Report" onclick="this.form.target = '_blank'" styleClass="rounded-button ui-button-secondary"
+                                 ajax="false" title="Reporte de Cliente" actionListener="#{ClienteC.verReportePDFEST()}"/>
+            </h:form>
+
+            <!-- Creando el formulario del listado-->
+
+            <!--            Aplicando x-->
+            <h:form id="MostrarCliente">
+
+                <p:dataTable id="tablacli" var="tblcli" value="#{ClienteC.listadoCli}" rows="5" selection="#{ClienteC.cli}" rowKey="#{tblcli.id}"
+                             selectionMode="single" resizableColumns="true" 
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                             rowsPerPageTemplate="1,5,{ShowAll|'All'}" 
+                             >
+
+                    <f:facet name="header">
+                        <p:outputLabel value="Filtro Por: " style="align-content: center ; alignment-adjust : central "/>
+                        <center>
+                            <p:selectOneMenu value="#{ClienteC.listado}" style="width: 100px">
+                                <f:selectItem itemValue="1" itemLabel="Activos"/>
+                                <f:selectItem itemValue="2" itemLabel="Inactivos"/>
+                                <f:selectItem itemValue="3" itemLabel="Todos"/>
+                                <p:ajax listener="#{ClienteC.listar()}" update="MostrarCliente:tablacli"/>
+                            </p:selectOneMenu>
+                        </center>
+                    </f:facet>
+
+                    <p:column headerText="Nombre y Apellido" filterBy="#{tblcli.nombre}" style="width: 120px  ;text-align: center" >
+                        <h:outputText value="#{tblcli.nombre},#{tblcli.apellido}"  />
+                    </p:column>  
+
+                    <p:column headerText="DNI" filterBy="#{tblcli.dni}" style=" width: 50px ;text-align: center" >
+                        <h:outputText value="#{tblcli.dni}"  />
+                    </p:column>    
+
+                    <p:column headerText="Celular" style="width: 40px ; text-align: center ">
+                        <h:outputText value="#{tblcli.celular}"  />
+                    </p:column>  
+
+                    <p:column headerText="E-mail" style="width: 200px; text-align: center ">
+                        <h:outputText value="#{tblcli.email}"  />
+                    </p:column>  
+
+
+                    <p:column headerText="Distrito" style="width: 70px ; text-align: center">
+                        <h:outputText value="#{tblcli.ubigeo}" >
+                            <f:converter converterId="UbigeoConverter"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Direccion"  style="width: 100px;  text-align: center " >
+                        <h:outputText value="#{tblcli.direccion}"/>
+                    </p:column>  
+
+                    <!--                    <p:column style="width: 65px ; text-align: center" headerText="Modificar">
+                                            <p:commandButton icon="ui-icon-pencil" value="Modificar" oncomplete="PF('wdlgDatos').show();" update=":formModificar" style="background-color: azure ">
+                                                <f:setPropertyActionListener value="{tblcli}" target="{ClienteC.cli}" />
+                                            </p:commandButton>
+                    
+                                        </p:column> -->
+
+                    <!--                                            eliminar-->
+                    <!--                    <p:column style="width: 65px ; text-align: center" headerText="Eliminar">-->
+                    <!--                        <p:commandButton icon="ui-icon-trash" value="Eliminar" actionListener="{ClienteC.eliminar(tblcli)}" update="tablacli mensaje" style="background-color: azure" >
+                                                <p:confirm header="Confirmación" message="¿Desea Eliminar?" icon="ui-icon-alert"/>
+                                                <p:tooltip trackMouse="true"/>
+                                            </p:commandButton>-->
+
+                    <!--                    </p:column>-->
+
+                </p:dataTable>
+
+                <!--Contextmenu-->
+
+                <p:contextMenu for="tablacli">
+                    <p:menuitem value="Modificar" icon="pi pi-search" oncomplete="PF('wdlgDatos').show()" update=":formModificar"/>
+                    <p:menuitem value="Eliminar" icon="pi pi-trash" actionListener="#{ClienteC.eliminar()}" update="tablacli mensaje">
+                        <p:confirm header="Confirmación" message="¿Deseas eliminar?"/>
+                    </p:menuitem>
+                    <p:menuitem value="Restaurar" icon="=pi pi-trash" actionListener="#{ClienteC.restaurar()}" update="tablacli mensaje">
+                        <p:confirm header="Confirmación" message="¿Deseas restaurar?" icon="pi pi-user-plus"/>
+                    </p:menuitem>
+                </p:contextMenu>
+
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                </p:confirmDialog>
+            </h:form>
+
+
+
+
+            <!-- Dialogo-->
+            <p:dialog header="Datos del Cliente" widgetVar="wdlgDatos" id="dlgDatos">
+                <h:form id="formModificar">
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Nombre" />
+                        <p:inputText value="#{ClienteC.cli.nombre}"  required="true" id="nombre" size="35" style="text-align: center">
+                            <p:keyFilter regEx="/[A-Za-z ]/" />
+                        </p:inputText>
+                        <p:outputLabel value="Apellido" />
+                        <p:inputText value="#{ClienteC.cli.apellido}"  required="true" id="apellido" size="35" style="text-align: center">
+                            <p:keyFilter regEx="/[A-Za-z ]/"/>
+                        </p:inputText>
+                        <p:outputLabel value="Celular" />
+                        <p:inputText value="#{ClienteC.cli.celular}" required="true" maxlength="9" id="celular" size="35" style="text-align: center">
+                            <p:keyFilter regEx="/[0-9]/" />
+                        </p:inputText>
+                        <p:outputLabel value="E-mail" />
+                        <p:inputText value="#{ClienteC.cli.email}" required="true" id="e-mail" size="35" style="text-align: center"/>
+                        <p:outputLabel value="Direccion" />
+                        <p:inputText value="#{ClienteC.cli.direccion}" required="true" id="direccion" size="35" style="text-align: center">
+                            <p:keyFilter regEx="/[A-Za-z0-9 °_-]/" />
+                        </p:inputText>
+
+                        <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();" actionListener="#{ClienteC.limpiar()}" />
+                        <p:commandButton id="modificardialogo" value="Modificar" actionListener="#{ClienteC.modificar()}" 
+                                         update="formModificar :MostrarCliente:tablacli mensaje" 
+                                         oncomplete="if(!args.validationFailed)PF('wdlgDatos').hide();"/>
+                    </p:panelGrid>
+                </h:form>
+            </p:dialog>
+        </center>
+    </h:body>
+</html>
+
+
+<!--  <div class="card" style="border-width: 2px ; border-color: black;border-style: solid;width: 120px" >
+            <img src="img/stich.png" style="width: 120px"/>
+        </div> -->

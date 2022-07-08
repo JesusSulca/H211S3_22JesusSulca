@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <title>Venta</title>
+    </h:head>
+    <body>
+    <p:menubar>
+        <p:submenu label="Cliente">
+            <p:menuitem value="registrar cliente" outcome="cliente"/>
+        </p:submenu>
+        <p:submenu label="Producto">
+            <p:menuitem value="Registrar Producto" outcome="producto"/>
+        </p:submenu>
+    </p:menubar>
+
+    <p:growl id="mensaje" severity="info, fatal , error" showDetail="true" showSummary="true" />
+    <p:growl id="growl-sticky" for="sticky-key" showDetail="true" showSummary="true" />
+
+    <p:spacer height="20 px"/>
+    <center>
+        <h:form id="formFactura">
+            <h2>Registro de Ventas</h2>
+            <p:panelGrid columns="4" id="Factura">
+                <p:outputLabel value="DNI" />
+
+                <p:commandButton value="Buscar" action="#{ventaC.Filtrado()}" update="txtApellido txtDireccion txtCelular">
+                    <p:inputText id="Nombre" value="#{ventaC.cli.dni}" maxlength="8">
+                        <p:keyFilter regEx="/[0-9]/" />
+                    </p:inputText>
+                </p:commandButton>
+
+
+                <p:outputLabel value="Nombre del producto"/>
+                <p:commandButton value="Mostrar" action="#{ventaC.cargarDatos()}" update="txtStock txtPrecio">
+                    <p:autoComplete id="AutocompletarProducto" value="#{ventaC.pro.nombre}" completeMethod="#{ventaC.autocompletePrueba}" immediate="true" />
+
+                </p:commandButton>
+
+
+
+                <p:outputLabel value="Apellido y Nombre"/>
+                <p:outputLabel id="txtApellido" value="#{ventaC.cli.nombre},#{ventaC.cli.apellido}"/>
+                <p:outputLabel value="Stock disponible"/>
+                <p:outputLabel id="txtStock" value="#{ventaC.pro.stock}" />
+                <p:outputLabel value="Direccion"/>
+                <p:outputLabel id="txtDireccion" value="#{ventaC.cli.direccion}"/>
+                <p:outputLabel  value="Precio"/>
+                <p:outputLabel id="txtPrecio" value="#{ventaC.pro.precio}"/>
+                <p:outputLabel value="Celular"/>
+                <p:outputLabel id="txtCelular" value="#{ventaC.cli.celular}"/>
+                <p:outputLabel value="Cantidad"/>
+                <p:inputText value="#{ventaC.pro.cantidad}" id="cantidad" maxlength="4">
+                    <p:keyFilter regEx="/[0-9]/" />
+                </p:inputText>
+                <p:outputLabel value="Fecha" for="fecha" />
+                <p:calendar id="fecha" value="#{ventaC.ven.fechaVenta}" 
+                            yearRange="c:c" pattern="dd-MM-yyyy" navigator="true" maxdate="@now" mindate="@now" size="20" showOn="button"
+                            required="true" requiredMessage="Ingrese la fecha">
+                </p:calendar>
+                <p:outputLabel value="Tipo de Venta" />
+                <p:selectOneMenu id="option" value="#{ventaC.ven.tipoventa}">
+                    <f:selectItem itemLabel="Seleccionar :" itemValue=""/>
+                    <f:selectItem itemLabel="Presencial" itemValue="P"/>
+                    <f:selectItem itemLabel="Virtual" itemValue="V"/>
+                </p:selectOneMenu>
+            </p:panelGrid>
+            <p:spacer height="30 px"/>
+            <p:commandButton value="Agregar" actionListener="#{ventaC.validadorProductoRepetido(ventaC.pro)}" update="formTabla:tablaprolis formTabla:txttotal txtStock txtPrecio AutocompletarProducto cantidad mensaje"/>
+            <p:spacer height="20 px"/>
+            <p:commandButton value="Limpiar" actionListener="#{ventaC.Limpiar}" update="formTabla:tablaprolis"/>
+            <p:commandButton value="venta" actionListener="#{ventaC.registrar()}" update="formTabla:tablaprolis formTabla formFactura:Factura mensaje"/>
+            <p:commandButton value="Boleta" onclick="this.form.target = '_blank'" styleClass="rounded-button ui-button-secondary"
+                             ajax="false" title="Boleta" actionListener="#{ventaC.verReportePDFEST()}"/>
+
+
+        </h:form>
+        <p:spacer height="20 px"/>
+        <h:form id="formTabla">
+            <p:dataTable var="tblProlis" id="tablaprolis" value="#{ventaC.listarVD}">
+                <p:column headerText="Nro">
+                    <h:outputText value="#{tblProlis.item}"  />
+                </p:column>
+                <p:column headerText="Codigo Producto">
+                    <h:outputText value="#{tblProlis.codigoProducto}"  />
+                </p:column>
+                <p:column headerText="Nombre de Producto">
+                    <h:outputText value="#{tblProlis.producto}"  />
+                </p:column>
+                <p:column headerText="Descripcion">
+                    <h:outputText value="#{tblProlis.descripcion}"  />
+                </p:column>
+                <p:column headerText="Cantidad">
+                    <h:outputText value="#{tblProlis.cantidad}"  />
+                </p:column>
+                <p:column headerText="Precio">
+                    <h:outputText value="#{tblProlis.precio}"  />
+                </p:column>
+                <p:column headerText="Subtotal">
+                    <h:outputText value="#{tblProlis.subtotal}"  />
+                </p:column>
+            </p:dataTable>
+
+
+            <h:outputLabel value="#{ventaC.total}" id="txttotal"/>
+        </h:form>
+
+    </center>
+
+</body>
+</html>
