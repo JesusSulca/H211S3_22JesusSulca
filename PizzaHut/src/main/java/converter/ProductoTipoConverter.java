@@ -22,6 +22,7 @@ public class ProductoTipoConverter implements Converter {
             tipo = (String)value;
             switch(tipo){
                 case "P" : tipo = "Pizza";break;
+                case "D" : tipo = "Dulce";break;
             }
         }
         return tipo;

@@ -14,7 +14,7 @@
     <h:body >
         <p:menubar>
             <p:submenu label="Cliente">
-                <p:menuitem value="registrar Cliente" outcome="index"/>
+                <p:menuitem value="registrar Cliente" outcome="cliente"/>
             </p:submenu>
             <p:submenu label="Ventas">
                 <p:menuitem value="Realizar Venta" outcome="venta"/>
@@ -44,18 +44,28 @@
                     <p:inputText value="#{ProductoC.pro.precio}" required="true" id="Precio" style="text-align: center" maxlength="5" >
                         <p:keyFilter regEx="/[0-9.]/" />
                     </p:inputText>
-                    <p:outputLabel for="tipo" value="Tipo: " style="text-align: center" />
-                    <p:selectOneRadio id="tipo" value="#{ProductoC.pro.tipo}" 
-                                      required="true" requiredMessage="Falta seleccionar" >
-                        <f:selectItem itemLabel="Pizza" itemValue="P"  />
-                    </p:selectOneRadio>
-                    <p:outputLabel for="tamaño" value="Tamaño"/>
-                    <p:selectOneRadio id="tamaño" value="#{ProductoC.pro.tamano}"
-                                      required="true" requiredMessage="Falta seleccionar">
-                        <f:selectItem itemLabel="XXL" itemValue="X"/>
+
+
+                    <p:outputLabel for="tipo" value="Tipo" />
+                    <p:selectOneMenu id="tipo" value="#{ProductoC.pro.tipo}" styleClass="ticket"
+                                     autoWidth="true" style="width: 200px" required="true" >
+                        <f:selectItem itemLabel="Seleccionar" itemValue=""/>
+                        <f:selectItem itemLabel="Pizza" itemValue="P" />
+                        <f:selectItem itemLabel="Dulce" itemValue="D"/>
+                    </p:selectOneMenu>
+
+
+
+                    <p:outputLabel for="tamaño" value="Tamaño" />
+                    <p:selectOneMenu id="tamaño" value="#{ProductoC.pro.tamano}" styleClass="ticket"
+                                     autoWidth="true" style="width: 200px" required="true" >
+                        <f:selectItem itemLabel="Seleccionar" itemValue=""/>
+                        <f:selectItem itemLabel="XXL" itemValue="X" />
                         <f:selectItem itemLabel="Individual" itemValue="I"/>
                         <f:selectItem itemLabel="Familiar" itemValue="F"/>
-                    </p:selectOneRadio>
+                    </p:selectOneMenu>
+
+
                     <p:outputLabel value="Stock" />
                     <p:inputText value="#{ProductoC.pro.stock}" maxlength="3" required="true" id="stock" style="text-align: center">
                         <p:keyFilter regEx="/[0-9]/" />
@@ -150,13 +160,28 @@
                         <p:outputLabel value="Precio" />
                         <p:inputText value="#{ProductoC.pro.precio}"  id="Precio"/>
 
-                        <p:outputLabel value="Tipo" />
-                        <p:inputText value="#{ProductoC.pro.tipo}" id="tipo"/>
+                        <p:outputLabel for="tipo" value="Tipo" />
+                        <p:selectOneMenu id="tipo" value="#{ProductoC.pro.tipo}" styleClass="ticket"
+                                         autoWidth="true" style="width: 200px" required="true" >
+                            <f:selectItem itemLabel="Seleccionar" itemValue=""/>
+                            <f:selectItem itemLabel="Pizza" itemValue="P" />
+                            <f:selectItem itemLabel="Dulce" itemValue="D"/>
+                        </p:selectOneMenu>
+
+
+
+                        <p:outputLabel for="tamaño" value="Tamaño" />
+                        <p:selectOneMenu id="tamaño" value="#{ProductoC.pro.tamano}" styleClass="ticket"
+                                         autoWidth="true" style="width: 200px" required="true" >
+                            <f:selectItem itemLabel="Seleccionar" itemValue=""/>
+                            <f:selectItem itemLabel="XXL" itemValue="X" />
+                            <f:selectItem itemLabel="Individual" itemValue="I"/>
+                            <f:selectItem itemLabel="Familiar" itemValue="F"/>
+                        </p:selectOneMenu>
 
                         <p:outputLabel value="Stock" />
                         <p:inputText value="#{ProductoC.pro.stock}" id="stock"/>
-                        <p:outputLabel value="Tamano" />
-                        <p:inputText value="#{ProductoC.pro.tamano}"  id="tamano"/>
+
                         <p:outputLabel value="Detalle" />
                         <p:inputText value="#{ProductoC.pro.detalle}" id="detalle"/>
                         <p:commandButton value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();" actionListener="#{ProductoC.limpiar()}" />

@@ -12,6 +12,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import modelo.Ubigeo;
+import reporte.reportesCliente;
 @Named(value = "ClienteC")
 @SessionScoped
 public class ClienteC implements Serializable {
@@ -41,7 +42,7 @@ public class ClienteC implements Serializable {
                     cli.setEmail(caseMinuscula(cli.getEmail()));
                     cli.setDireccion(caseMinuscula(cli.getDireccion()));
                     dao.registrar(cli);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "Registrado con Ã©xito"));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "Registrado con éxito"));
                     limpiar();
                     listar();
                 } else {
@@ -59,12 +60,12 @@ public class ClienteC implements Serializable {
     public String caseMinuscula(String camelcase) {
         char ch[] = camelcase.toCharArray();
         for (int i = 0; i < camelcase.length(); i++) {
-            if (i == 0 && ch[i] != ' ' || ch[i] != ' ' && ch[i - 1] == ' ') {  // Si se encuentra el primer carÃ¡cter de una palabra
-                if (ch[i] >= 'A' && ch[i] <= 'Z') {      // Si estÃ¡ en mayÃºsculas
-                    ch[i] = (char) (ch[i] - 'A' + 'a');  // Convertir en minÃºsculas
+            if (i == 0 && ch[i] != ' ' || ch[i] != ' ' && ch[i - 1] == ' ') {  // Si se encuentra el primer carácter de una palabra
+                if (ch[i] >= 'A' && ch[i] <= 'Z') {      // Si está en mayúsculas
+                    ch[i] = (char) (ch[i] - 'A' + 'a');  // Convertir en minúsculas
                 }
-            } // Si aparte del primer carÃ¡cter cualquiera estÃ¡ en mayÃºsculas
-            else if (ch[i] >= 'A' && ch[i] <= 'Z') {     // Convertir en minÃºsculas
+            } // Si aparte del primer carácter cualquiera está en mayúsculas
+            else if (ch[i] >= 'A' && ch[i] <= 'Z') {     // Convertir en minúsculas
                 ch[i] = (char) (ch[i] + 'a' - 'A');
             }
         }
@@ -76,12 +77,12 @@ public class ClienteC implements Serializable {
     public String caseMayuscula(String camelcase) {
         char ch[] = camelcase.toCharArray();
         for (int i = 0; i < camelcase.length(); i++) {
-            if (i == 0 && ch[i] != ' ' || ch[i] != ' ' && ch[i - 1] == ' ') {  // Si se encuentra el primer carÃ¡cter de una palabra
-                if (ch[i] >= 'a' && ch[i] <= 'z') {      // Si estÃ¡ en minÃºsculas
-                    ch[i] = (char) (ch[i] - 'a' + 'A');  // Convertir en mayÃºsculas
+            if (i == 0 && ch[i] != ' ' || ch[i] != ' ' && ch[i - 1] == ' ') {  // Si se encuentra el primer carácter de una palabra
+                if (ch[i] >= 'a' && ch[i] <= 'z') {      // Si está en minúsculas
+                    ch[i] = (char) (ch[i] - 'a' + 'A');  // Convertir en mayúsculas
                 }
-            } // Si aparte del primer carÃ¡cter cualquiera estÃ¡ en mayÃºsculas
-            else if (ch[i] >= 'A' && ch[i] <= 'Z') {     // Convertir en minÃºsculas
+            } // Si aparte del primer carácter cualquiera está en mayúsculas
+            else if (ch[i] >= 'A' && ch[i] <= 'Z') {     // Convertir en minúsculas
                 ch[i] = (char) (ch[i] + 'a' - 'A');
             }
         }
@@ -109,7 +110,7 @@ public class ClienteC implements Serializable {
         try {
             cli.setEstado("I");
             dao.eliminar(cli);
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "Eliminado con Ã©xito"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "Eliminado con éxito"));
             limpiar();
             listar();
 
@@ -117,15 +118,6 @@ public class ClienteC implements Serializable {
             System.out.println("Error en eliminarC/ClienteC" + e.getMessage());
         }
     }
-
-//    public void verReportePDFEST()throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException{
-//        reportesCliente reCliente = new reportesCliente(); 
-//        FacesContext facescontext = FacesContext.getCurrentInstance();
-//        ServletContext servletcontext = (ServletContext) facescontext.getExternalContext().getContext();
-//        String root = servletcontext.getRealPath("Image/ClienteReporteJR.jasper");
-//        reCliente.getReportePdf(root);
-//        FacesContext.getCurrentInstance().responseComplete();
-//    }
     
     public void modificar() throws Exception {
         try {
@@ -136,7 +128,7 @@ public class ClienteC implements Serializable {
                     cli.setEmail(caseMinuscula(cli.getEmail()));
                     cli.setDireccion(caseMinuscula(cli.getDireccion()));
                     dao.modificar(cli);
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "Modificado con Ã©xito"));
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "OK", "Modificado con éxito"));
                     limpiar();
                     listar();
                 } else {
@@ -160,6 +152,15 @@ public class ClienteC implements Serializable {
            System.out.println("error en restaurar/ClienteC " + e);
        }
    }
+   
+   public void verReportePDFEST() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+        reportesCliente reCliente = new reportesCliente();
+        FacesContext facescontext = FacesContext.getCurrentInstance();
+        ServletContext servletcontext = (ServletContext) facescontext.getExternalContext().getContext();
+        String root = servletcontext.getRealPath("img/clienteHut.jasper");
+        reCliente.getReportePdf(root);
+        FacesContext.getCurrentInstance().responseComplete();
+    }
     
     
     public void limpiar() {

@@ -75,9 +75,17 @@
             <p:commandButton value="Agregar" actionListener="#{ventaC.validadorProductoRepetido(ventaC.pro)}" update="formTabla:tablaprolis formTabla:txttotal txtStock txtPrecio AutocompletarProducto cantidad mensaje"/>
             <p:spacer height="20 px"/>
             <p:commandButton value="Limpiar" actionListener="#{ventaC.Limpiar}" update="formTabla:tablaprolis"/>
-            <p:commandButton value="venta" actionListener="#{ventaC.registrar()}" update="formTabla:tablaprolis formTabla formFactura:Factura mensaje"/>
-            <p:commandButton value="Boleta" onclick="this.form.target = '_blank'" styleClass="rounded-button ui-button-secondary"
-                             ajax="false" title="Boleta" actionListener="#{ventaC.verReportePDFEST()}"/>
+            <p:commandButton value="Vender" icon="pi pi-shopping-cart" oncomplete="PF('reporte').show()" actionListener="#{ventaC.registrar()}" 
+                             update="formTabla:tablaprolis formTabla formFactura:Factura mensaje"/>
+            <p:confirmDialog widgetVar="reporte" showEffect="fade" width="300" hideEffect="fade"
+                             message="¿Desea una boleta?" header="Boleta de Venta" severity="warn">
+                <p:commandButton value="Generar" onclick="this.form.target = '_blank';PF('reporte').hide()" 
+                                 ajax="false" title="Boleta" actionListener="#{ventaC.verReportePDFEST()}" icon="pi pi-print" />
+                <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                                 onclick="PF('reporte').hide()"/>
+            </p:confirmDialog>
+            
+            
 
 
         </h:form>

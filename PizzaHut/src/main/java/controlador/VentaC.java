@@ -15,6 +15,7 @@ import modelo.Cliente;
 import modelo.Producto;
 import modelo.Venta;
 import modelo.VentaDetalle;
+import reporte.reportesVenta;
 
 @Named(value = "ventaC")
 @SessionScoped
@@ -100,16 +101,16 @@ public class VentaC implements Serializable {
         }
     }
     
-//public void verReportePDFEST() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, Exception {
-//        int idven = dao.ventasMaximas();
-//        reportesVenta reporte = new reportesVenta();
-//        FacesContext facescontext = FacesContext.getCurrentInstance();
-//        ServletContext servletcontext = (ServletContext) facescontext.getExternalContext().getContext();
-//        String root = servletcontext.getRealPath("Image/Boleta.jasper");
-//        String numeroinformesocial = String.valueOf(idven);
-//        reporte.getReportePdf(root, numeroinformesocial);
-//        FacesContext.getCurrentInstance().responseComplete();
-//    }
+public void verReportePDFEST() throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException, Exception {
+        int idven = dao.ventasMaximas();
+        reportesVenta reporte = new reportesVenta();
+        FacesContext facescontext = FacesContext.getCurrentInstance();
+        ServletContext servletcontext = (ServletContext) facescontext.getExternalContext().getContext();
+        String root = servletcontext.getRealPath("img/rBoleta_1.jasper");
+        String numeroinformesocial = String.valueOf(8);
+        reporte.getReportePdf(root, numeroinformesocial);
+        FacesContext.getCurrentInstance().responseComplete();
+    }
 
     public void validadorProductoRepetido(Producto productos) {
         int indice = 0;
